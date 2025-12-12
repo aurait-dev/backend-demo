@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     # 1. Checkout
@@ -44,11 +44,9 @@ jobs:
     - name: Push Docker image
       run: docker push aurait/backend-demo:latest
 
-    # 7. Load kubeconfig from secret
-    - name: Set kubeconfig
-      run: |
-        mkdir -p $HOME/.kube
-        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+    # 7. Set kubeconfig for local cluster
+    - name: Set KUBECONFIG
+      run: echo "KUBECONFIG=/etc/kubernetes/admin.conf" >> $GITHUB_ENV
 
     # 8. Test kubectl works
     - name: Test kubectl access
@@ -56,5 +54,4 @@ jobs:
 
     # 9. Deploy to Kubernetes
     - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f k8s/backend-deployment.yaml
+      run: kubectl apply -f k8s/backend-deployment.yaml
