@@ -8,7 +8,8 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "backend-demo version: v1.0.3 (commit df40b6)";
+        return "backend-demo OK";
     }
 }
+
 
